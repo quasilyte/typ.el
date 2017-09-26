@@ -156,6 +156,9 @@ When `typ-default-annotations-loaded-p' returns non-nil, does nothing."
 
 (defun typ--default-annotations-load ()
   "Unconditionally load default annotations."
+  ;; NOTE: if you add additional definitions here,
+  ;;       please do not forget to add tests for it.
+  ;;
   ;; Special case for nil.
   (typ-annotate nil :list)
   ;; Fill `integer' functions.
@@ -195,14 +198,21 @@ When `typ-default-annotations-loaded-p' returns non-nil, does nothing."
         ;; - `float' if at least 1 arg is float
         ;; - `integer' if all arguments are integers
         ;; - `number' otherwise
-        (let ((ret :integer))
+        (let ((found-float nil)
+              (all-ints t))
           (while (and args
-                      (eq :integer ret))
-            (setq ret (typ-infer (car args))
-                  args (cdr args)))
-          (if (memq ret '(:integer :float))
-              ret
-            :number))))
+                      (not found-float))
+            (let ((type (typ-infer (car args))))
+              (if (eq :float type)
+                  (setq found-float t)
+                (unless (eq :integer type)
+                  (setq all-ints nil))
+                (setq args (cdr args)))))
+          (cond
+           (found-float :float)
+           (all-ints :integer)
+           (t :number))))
+       )
     ;; `quote' returns `list' for quoted list
     ;; instead of going through `typ-infer' which will
     ;; lead to `typ-infer-call' and incorrect results.
