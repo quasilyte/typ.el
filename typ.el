@@ -164,7 +164,8 @@ When `typ-default-annotations-loaded-p' returns non-nil, does nothing."
   ;; Fill `integer' functions.
   (dolist (fn '(lsh
                 char-syntax
-                point))
+                point
+                length))
     (typ-annotate fn :integer))
   ;; Fill `float' functions.
   (dolist (fn '(float))
@@ -190,6 +191,13 @@ When `typ-default-annotations-loaded-p' returns non-nil, does nothing."
   ;; Fill `symbol' functions.
   (dolist (fn '(intern))
     (typ-annotate fn :symbol))
+  ;; Fill `boolean' functions.
+  (dolist (fn '(not
+                symbolp
+                stringp
+                consp
+                listp))
+    (typ-annotate fn :boolean))
   ;; Fill mixed type functions.
   (cl-flet
       ;; Common function handler defined here.

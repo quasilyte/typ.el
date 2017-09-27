@@ -73,6 +73,7 @@
     (char-syntax ?c)
     (char-syntax (char-syntax ?c))
     (point)
+    (length [1])
     )
   (typ--test/typ-infer :integer
     (+ 1 1 1)
@@ -102,7 +103,7 @@
     ))
 
 (ert-deftest typ-infer-string ()
-  (typ--test-typ-infer :string
+  (typ--test/typ-infer :string
     (int-to-string 1)
     (number-to-string 1)
     (char-to-string ?c)
@@ -126,3 +127,11 @@
   (typ--test/typ-infer :symbol
     (intern "sym")
     ))
+
+(ert-deftest typ-infer-boolean ()
+  (typ--test/typ-infer :boolean
+    (not t)
+    (symbolp 'sym)
+    (stringp "")
+    (consp (cons 1 2))
+    (listp (list 1 2))))
