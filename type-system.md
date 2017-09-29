@@ -43,7 +43,7 @@ so `:number` is the closest one that can be safely selected.
 In the tree above, **simple** and **parametric** types are always the leaves.  
 The **abstract** types are always a root of some other types.
 
-There is no `:character` type because `:integer` is enough (characters are
+There is no `:character` type because `:integer` is enough ([characters](https://www.gnu.org/software/emacs/manual/html_node/elisp/Character-Type.html#Character-Type) are
 represented as integers in Emacs Lisp).
 
 ### Special cases
