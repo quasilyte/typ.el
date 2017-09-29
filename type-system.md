@@ -1,6 +1,6 @@
 ## Type system overview
 
-This is a compact `typ.el` type system model overview.
+This is a compact `typ.el` type system model overview.  
 It is heavilly based on official ["Programming types"](https://www.gnu.org/software/emacs/manual/html_node/elisp/Programming-Types.html#Programming-Types) documentation.
 
 ### Kinds of types
