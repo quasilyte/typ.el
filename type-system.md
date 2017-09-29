@@ -40,7 +40,7 @@ so `:number` is the closest one that can be safely selected.
 :nil
 ```
 
-In the tree above, **simple** and **parametric** types are always the leaves.
+In the tree above, **simple** and **parametric** types are always the leaves.  
 The **abstract** types are always a root of some other types.
 
 There is no `:character` type because `:integer` is enough (characters are
