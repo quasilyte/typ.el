@@ -32,6 +32,24 @@ Keyword object that represents type unique ID.
 - **Simple** and **abstract** types are tags themselves
 - Primary type of **abstract**, i.e. `(car type)`
 
+#### Type implementation
+
+**Abstract** type always have one or more **implementations**.
+
+Abstract type can implement other abstract type, if it's
+operation set is a superset of implemented type **interface**.
+For example, `:array` implements `:sequence`.
+
+In type tree below, implementations are shown below the abstract type,
+with 3 space padding.
+
+#### Type interface
+
+A set of operations that is defined over **abstract**.
+
+For example, arithmetic operations are defined for `:number` type.  
+Both `:float` and `:integer` implement that.
+
 ### Type tree
 
 ```elisp
