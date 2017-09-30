@@ -23,6 +23,15 @@ At the *run time*, type is either `:integer` or `:float`, but we can not
 select appropriate type for that expression during *compile time*,
 so `:number` is the closest one that can be safely selected.
 
+### Terminology
+
+#### Type tag
+
+Keyword object that represents type unique ID.
+
+- **Simple** and **abstract** types are tags themselves
+- Primary type of **abstract**, i.e. `(car type)`
+
 ### Type tree
 
 ```elisp
