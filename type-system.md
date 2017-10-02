@@ -56,9 +56,10 @@ Both `:float` and `:integer` implement that.
 :number
    :integer
    :float
-:sequence
+(:sequence . T)
    (:list . T)
-   :array
+   (:array . T)
+      :bool-vector
       :string
       (:vector . T)
 :hash-table
@@ -81,3 +82,6 @@ represented as integers in Emacs Lisp).
 2. If no type can be inferred, `nil` is reported.  
    There is no `:undefined` or `:any` type.
 
+3. `:string` can be represented as `(:array . :integer)` and `(:sequence . :integer)`.
+
+4. `:bool-vector` can be represented as `(:array . :boolean)` and `(:sequence . :boolean)`.
