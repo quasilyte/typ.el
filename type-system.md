@@ -8,20 +8,20 @@ It is heavilly based on official ["Programming types"](https://www.gnu.org/softw
 **Simple type** - concrete value type (can also be viewed as "primitive type").  
 Represented with `keyword`.
 
+**Abstract type** - type that have no direct instances.  
+Abstract type tells about object interface and never about it's concrete type.  
+Represented with `keyword`.  
+Example: `(string-to-number x)` => `:number`  
+At the *run time*, type is either `:integer` or `:float`,  
+but we can not select appropriate type for that expression during *compile time*,
+so `:number` is the closest one that can be safely selected.
+
 **Parametric type** - mostly related to sequence types.
 Parametric types have primary type and a single parameter type.  
 Represented with a `cons` with `car` set to primary type and `cdr`
 set to parameter type.  
 Example: `(list 1 2)` => `(cons :list :integer)`  
 Example: `(list (list 1) (list 2))` => `(cons :list (cons :list :integer))`  
-
-**Abstract type** - type that have no direct instances.  
-Abstract type tells about object interface and never about it's concrete type.  
-Represented with `keyword`.  
-Example: `(string-to-number x)` => `:number`  
-At the *run time*, type is either `:integer` or `:float`, but we can not
-select appropriate type for that expression during *compile time*,
-so `:number` is the closest one that can be safely selected.
 
 ### Terminology
 
