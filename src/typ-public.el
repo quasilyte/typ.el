@@ -17,7 +17,7 @@ in all cases, with any arguments.
 Used in `typ-infer-call' to discover FN return type."
   (unless (symbolp fn)
     (error "FN must be a symbol, %S (%s) given" fn (type-of fn)))
-  (unless (symbolp typ)
+  (unless (symbolp type)
     (error "TYPE must be a symbol, %S (%s) given" type (type-of type)))
   (puthash fn type typ--funcs-db))
 
