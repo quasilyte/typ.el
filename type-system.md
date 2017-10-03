@@ -78,7 +78,7 @@ represented as integers in Emacs Lisp).
 
 1. Type `:nil` serves as a return type of `void`-like functions (called "procedures" in some languages).  
    `nil` and `()` literals has `:nil` type, not `(cons :list nil)`.
-   
+
 2. If no type can be inferred, `nil` is reported.  
    There is no `:undefined` or `:any` type.
 
