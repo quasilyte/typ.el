@@ -77,7 +77,8 @@
          [t :boolean]
          [sym :symbol]
          [nil :nil]
-         [() :nil]))
+         [() :nil]
+         ))
     (should (eq want
                 (typ-infer lit)))))
 
@@ -95,7 +96,8 @@
          [typ-boolean? t t]
          [typ-boolean? nil nil]
          [typ-symbol? sym t]
-         [typ-symbol? nil nil]))
+         [typ-symbol? nil nil]
+         ))
     (should (eq want
                 (funcall pred arg t)))))
 
@@ -114,6 +116,86 @@
          [typ-array? [1] t]
          [typ-array? (1) nil]
          [typ-array? 1 nil]
-         [typ-array? nil nil]))
+         [typ-array? nil nil]
+         ))
     (should (eq want
                 (not (not (funcall pred arg t)))))))
+
+(ert-deftest typ-infer-quoted ()
+  (pcase-dolist
+      (`[,expr ,want]
+       '([(+ a b) (:list . :symbol)]
+         [(+ 1 2) (:list . nil)]
+         [(1 2) (:list . :integer)]
+         [(1 2.0) (:list . :number)]
+         [((1) (2)) (:list :list . :integer)]
+         [((1) (2.0)) (:list :list . :number)]
+         [((1) [2]) (:list :sequence . :integer)]
+         [[1] (:vector . :integer)]
+         [[] (:vector . nil)]
+         [[() ()] (:vector . :nil)]
+         [[[] []] (:vector :vector . nil)]
+         ))
+    (should (equal want
+                   (typ-infer expr t)))))
+
+(ert-deftest typ-infer-integer ()
+  (dolist (expr '((lsh x y)
+                  (char-syntax ?c)
+                  (point)
+                  (length xs)
+                  ))
+    (should (equal :integer
+                   (typ-infer expr)))))
+
+(ert-deftest typ-infer-float ()
+  (dolist (expr '((float x)
+                  ))
+    (should (equal :float
+                   (typ-infer expr)))))
+
+(ert-deftest typ-infer-number ()
+  (dolist (expr '((string-to-number x)
+                  ))
+    (should (equal :number
+                   (typ-infer expr)))))
+
+(ert-deftest typ-infer-string ()
+  (dolist (expr '((int-to-string x)
+                  (number-to-string x)
+                  (char-to-string x)
+                  (concat x y z)
+                  (symbol-name sym)
+                  ))
+    (should (equal :string
+                   (typ-infer expr)))))
+
+(ert-deftest typ-infer-symbol ()
+  (dolist (expr '((intern "sym")
+                  ))
+    (should (equal :symbol
+                   (typ-infer expr)))))
+
+(ert-deftest typ-infer-boolean ()
+  (dolist (expr '((not x)
+                  (symbolp x)
+                  (stringp x)
+                  (consp x)
+                  (listp x)
+                  ))
+    (should (equal :boolean
+                   (typ-infer expr)))))
+
+(ert-deftest typ-infer-mixed ()
+  (pcase-dolist
+      (`[,expr ,want]
+       '([(+ 1 2) :integer]
+         [(+ 1 2.0) :float]
+         [(+ 1.0 2) :float]
+         [(+ 1.0 2.0) :float]
+         [(+ x 1.0) :float]
+         [(+ x 1) :number]
+         [(+ x y) :number]
+         ))
+    (should (equal want
+                   (typ-infer expr)))))
