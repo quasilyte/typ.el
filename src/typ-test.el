@@ -98,3 +98,22 @@
          [typ-symbol? nil nil]))
     (should (eq want
                 (funcall pred arg t)))))
+
+(ert-deftest typ-abstract-predicates ()
+  (pcase-dolist
+      (`[,pred ,arg ,want]
+       '([typ-number? 1 t]
+         [typ-number? 1.0 t]
+         [typ-number? nil nil]
+         [typ-sequence? "1" t]
+         [typ-sequence? (1) t]
+         [typ-sequence? [1] t]
+         [typ-sequence? 1 nil]
+         [typ-sequence? nil nil]
+         [typ-array? "1" t]
+         [typ-array? [1] t]
+         [typ-array? (1) nil]
+         [typ-array? 1 nil]
+         [typ-array? nil nil]))
+    (should (eq want
+                (not (not (funcall pred arg t)))))))
