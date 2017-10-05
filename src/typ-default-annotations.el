@@ -64,7 +64,22 @@
     ;; `quote' forces quoted context for `typ-infer' resolution.
     (typ-annotate-mixed
      'quote
-     (lambda (args) (typ-infer (car args) t)))
+     (pcase-lambda (`(,arg)) (typ-infer arg t)))
+    (typ-annotate-mixed
+     'elt
+     (pcase-lambda (`(,seq . _)) (typ-infer-elt seq)))
+    (typ-annotate-mixed
+     'aref
+     (pcase-lambda (`(,arr . _))
+       (let ((type (typ-infer arr)))
+         (if (typ-array? type)
+             (typ-elt type)
+           nil))))
+    (typ-annotate-mixed
+     'nth
+     (pcase-lambda (`(_ ,lst))
+       (pcase (typ-infer lst)
+         (`(:list . ,type) type))))
     ;; Arith functions.
     (typ-annotate-mixed '+ #'num-arith)
     (typ-annotate-mixed '- #'num-arith)

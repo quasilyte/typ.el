@@ -85,18 +85,18 @@
 (ert-deftest typ-simple-predicates ()
   (pcase-dolist
       (`[,pred ,arg ,want]
-       '([typ-integer? 10 t]
-         [typ-integer? nil nil]
-         [typ-float? 10.0 t]
-         [typ-float? nil nil]
-         [typ-string? "" t]
-         [typ-string? nil nil]
-         [typ-hash-table? #s(hash-table size 1 data nil) t]
-         [typ-hash-table? nil nil]
-         [typ-boolean? t t]
-         [typ-boolean? nil nil]
-         [typ-symbol? sym t]
-         [typ-symbol? nil nil]
+       '([typ-infer-integer? 10 t]
+         [typ-infer-integer? nil nil]
+         [typ-infer-float? 10.0 t]
+         [typ-infer-float? nil nil]
+         [typ-infer-string? "" t]
+         [typ-infer-string? nil nil]
+         [typ-infer-hash-table? #s(hash-table size 1 data nil) t]
+         [typ-infer-hash-table? nil nil]
+         [typ-infer-boolean? t t]
+         [typ-infer-boolean? nil nil]
+         [typ-infer-symbol? sym t]
+         [typ-infer-symbol? nil nil]
          ))
     (should (eq want
                 (funcall pred arg t)))))
@@ -104,19 +104,19 @@
 (ert-deftest typ-abstract-predicates ()
   (pcase-dolist
       (`[,pred ,arg ,want]
-       '([typ-number? 1 t]
-         [typ-number? 1.0 t]
-         [typ-number? nil nil]
-         [typ-sequence? "1" t]
-         [typ-sequence? (1) t]
-         [typ-sequence? [1] t]
-         [typ-sequence? 1 nil]
-         [typ-sequence? nil nil]
-         [typ-array? "1" t]
-         [typ-array? [1] t]
-         [typ-array? (1) nil]
-         [typ-array? 1 nil]
-         [typ-array? nil nil]
+       '([typ-infer-number? 1 t]
+         [typ-infer-number? 1.0 t]
+         [typ-infer-number? nil nil]
+         [typ-infer-sequence? "1" t]
+         [typ-infer-sequence? (1) t]
+         [typ-infer-sequence? [1] t]
+         [typ-infer-sequence? 1 nil]
+         [typ-infer-sequence? nil nil]
+         [typ-infer-array? "1" t]
+         [typ-infer-array? [1] t]
+         [typ-infer-array? (1) nil]
+         [typ-infer-array? 1 nil]
+         [typ-infer-array? nil nil]
          ))
     (should (eq want
                 (not (not (funcall pred arg t)))))))
@@ -138,6 +138,26 @@
          ))
     (should (equal want
                    (typ-infer expr t)))))
+
+(ert-deftest typ-infer-elt ()
+  (pcase-dolist
+      (`[,seq ,want]
+       '([(1 "2") nil]
+         [[1 "2"] nil]
+         [(1 2) :integer]
+         [[1 2] :integer]
+         ["1 2" :integer]
+         [(1 2.0) :number]
+         [[1 2.0] :number]
+         [(1.0 2.0) :float]
+         [["1" "2"] :string]
+         [[[1] [2]] (:vector . :integer)]
+         [(((1)) ((2))) (:list :list . :integer)]
+         [(((1)) ((2.0))) (:list :list . :number)]
+         [(((1)) (("2"))) (:list :list . nil)]
+         ))
+    (should (equal want
+                   (typ-infer-elt seq t)))))
 
 (ert-deftest typ-infer-integer ()
   (dolist (expr '((lsh x y)
@@ -196,6 +216,14 @@
          [(+ x 1.0) :float]
          [(+ x 1) :number]
          [(+ x y) :number]
+         [(elt [1 2] 0) :integer]
+         [(elt '("1" "2") 0) :string]
+         [(elt "" 0) :integer]
+         [(aref [1 2] 0) :integer]
+         [(aref "" 0) :integer]
+         [(aref '(1 2.0) 0) nil]
+         [(nth 1 '(1 2.0)) :number]
+         [(nth 1 [1 2.0] nil) nil]
          ))
     (should (equal want
                    (typ-infer expr)))))
