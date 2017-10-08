@@ -181,7 +181,11 @@ otherwise `typ-infer-call' is used."
              :string
            (typ-infer-vector expr)))
         ((eq t expr) :boolean)
-        ((symbolp expr) :symbol)
+        ((symbolp expr)
+         (if (or quoted
+                 (keywordp expr))
+             :symbol
+           nil))
         ((hash-table-p expr) :hash-table)
         (t nil)))
 
