@@ -14,7 +14,8 @@ If key contains callable value, it is called with
 unevaluated function arguments.
 See `typ-annotate-mixed' for more details.")
 
-(defvar typ--noreturn-funcs '(throw
+(defvar typ--noreturn-funcs '(noreturn
+                              throw
                               user-error
                               error
                               signal)
